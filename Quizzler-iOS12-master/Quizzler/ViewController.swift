@@ -12,16 +12,21 @@ class ViewController: UIViewController {
     
     let allQuestion = QuestionBank()
     var pickedAnswer : Bool = false
+    var questionNumber : Int = 0
+    var score : Int = 0
     
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet var progressBar: UIView!
     @IBOutlet weak var progressLabel: UILabel!
+    @IBOutlet weak var falseButton: UIButton!
+    @IBOutlet weak var trueButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let firstQuestion = allQuestion.list[0]
-        questionLabel.text = firstQuestion.questionText
+        let question = allQuestion.list[questionNumber]
+        questionLabel.text = question.questionText
+        updateUI()
     }
 
 
@@ -31,32 +36,82 @@ class ViewController: UIViewController {
         } else if sender.tag == 2 {
             pickedAnswer = false
         }
-        
         checkAnswer()
+        nextQuestion()
     }
     
     
     func updateUI() {
-      
+        
+        scoreLabel.text = "Score: \(score)"
+        progressLabel.text = "\(questionNumber + 1)/\(allQuestion.list.count)"
+        progressBar.frame.size.width = (view.frame.size.width / 13) * CGFloat(questionNumber + 1)
     }
     
 
     func nextQuestion() {
         
+        questionNumber += 1
+        
+        
+        if questionNumber < allQuestion.list.count {
+            
+            updateUI()
+            let question = allQuestion.list[questionNumber]
+            questionLabel.text = question.questionText
+            
+        } else {
+            
+            let alert = UIAlertController(title: "The game is over", message: "Restart?", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
+                self.startOver()
+            }))
+            //alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: {action in
+                //self.gameOver()
+            //}))
+            
+            self.present(alert, animated: true)
+            
+        }
+        
+
     }
     
     
     func checkAnswer() {
-        if(pickedAnswer == allQuestion.list[0].answer){
-            print("correct answer")
+        
+        let correctAnswer = allQuestion.list[questionNumber].answer
+        
+        if pickedAnswer == correctAnswer {
+            ProgressHUD.showSuccess("Correct!")
+            score += 100
         }else{
-            print("You're stupid!")
+            ProgressHUD.showError("Wrong!")
         }
+        
+        updateUI()
+        
     }
     
     
     func startOver() {
-       
+        
+        questionNumber = 0
+        score = 0
+        viewDidLoad()
+   
+    }
+    
+    func gameOver(){
+        
+        questionLabel.text = "Game Over \n You're score is \(score)"
+        trueButton.isHidden = true
+        falseButton.isHidden = true
+        scoreLabel.isHidden = true
+        progressBar.isHidden = true
+        progressLabel.isHidden = true
+        
     }
     
 
