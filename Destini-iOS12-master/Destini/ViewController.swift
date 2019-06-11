@@ -34,6 +34,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var topButton: UIButton!         // Has TAG = 1
     @IBOutlet weak var bottomButton: UIButton!      // Has TAG = 2
     @IBOutlet weak var storyTextView: UILabel!
+    @IBOutlet weak var restartButton: UIButton!
     
     // TODO Step 5: Initialise instance variables here
     
@@ -89,6 +90,13 @@ class ViewController: UIViewController {
     
     }
     
+    @IBAction func restartStory(_ sender: Any) {
+        showStory(story: story1, number: 1)
+        setAnswerA(answer: answer1a)
+        setAnswerB(answer: answer1b)
+        showButtons()
+    }
+    
     func showStory(story : String, number : Int) {
         storyNumber = number
         storyTextView.text = story
@@ -103,8 +111,15 @@ class ViewController: UIViewController {
     }
     
     func hideButtons() {
+        restartButton.isHidden = false
         topButton.isHidden = true
         bottomButton.isHidden = true
+    }
+    
+    func showButtons() {
+        restartButton.isHidden = true
+        topButton.isHidden = false
+        bottomButton.isHidden = false
     }
 
 
